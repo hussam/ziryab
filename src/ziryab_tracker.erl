@@ -1,19 +1,19 @@
--module(kvstracker).
+-module(ziryab_tracker).
 -export([start/1, addConfs/1, addConfs/2, view/0, view/1]).
 
--include("common.hrl").
+-include("ziryab.hrl").
 -include("params.hrl").
 
 % starts a tracker on the current node and adds the passed in configurations
 start(Confs) ->
    % register a kvs tracker on this node if one doesn't exist already
-   case whereis(kvstracker) of
+   case whereis(ziryab_tracker) of
       undefined ->
          % NOTE: We might have a data race on a single node, and so using
          % 'erlang:whereis' doesn't help. However, if the registration throws an
          % error, that means that a tracker already exists on this node and so
          % we can just move on.
-         catch(register(kvstracker, spawn(fun runTracker/0)));
+         catch(register(ziryab_tracker, spawn(fun runTracker/0)));
       _ ->
          ok
    end,
@@ -27,7 +27,7 @@ addConfs(Confs) ->
 % add a configuration to the current view of the tracker on Node
 addConfs(Confs, Node) ->
    Ref = make_ref(),
-   {kvstracker, Node} ! {Ref, self(), add_confs, Confs},
+   {ziryab_tracker, Node} ! {Ref, self(), add_confs, Confs},
    receive
       {Ref, ok} ->
          ok
@@ -40,7 +40,7 @@ view() ->
 % Get the KVS view on the given node
 view(Node) ->
    Ref = make_ref(),
-   {kvstracker, Node} ! {Ref, self(), get_view},
+   {ziryab_tracker, Node} ! {Ref, self(), get_view},
    receive
       {Ref, View} -> View
    end.
@@ -92,7 +92,7 @@ trackerLoop(View, TTG) ->
 % ask all local chain members to send in their configurations
 requestLocalConfs(View) ->
    lists:foreach(
-      fun(Pid) -> Pid ! {kvstracker, self(), get_conf} end,
+      fun(Pid) -> Pid ! {ziryab_tracker, self(), get_conf} end,
       lists:flatten([Pids || #conf{pids = Pids} <- ordsets:to_list(View)])
    ).
 
@@ -110,7 +110,7 @@ gossip(View) ->
    N = length(OtherNodes),
    if N > 0 ->
       Node = lists:nth(random:uniform(N), OtherNodes),
-      {kvstracker, Node} ! {gossip, View};
+      {ziryab_tracker, Node} ! {gossip, View};
    ?ELSE ->
       do_nothing
    end.

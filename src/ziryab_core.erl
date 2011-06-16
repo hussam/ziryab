@@ -1,4 +1,4 @@
--module(kv_core).
+-module(ziryab_core).
 -behaviour(gen_fsm).
 
 % public interface
@@ -23,7 +23,7 @@
    ]).
 
 
--include("common.hrl").
+-include("ziryab.hrl").
 -include("params.hrl").
 
 -record(syncs, {range, cores}).
@@ -38,7 +38,7 @@
 
 % start a new key/value store core on this node
 new(Range, SyncState) when is_list(SyncState) ->
-   {ok, Pid} = gen_fsm:start(kv_core, [new, Range, SyncState], []),
+   {ok, Pid} = gen_fsm:start(ziryab_core, [new, Range, SyncState], []),
    Pid.
 
 % create a forked copy of this kv core on this node
@@ -196,7 +196,7 @@ handle_sync_event(fork, _, State, StateData = #state{store = Store}) ->
 
    dets:open_file(Store, {file, Store}),    % restore original store
    % start a new forked core
-   {reply, gen_fsm:start(kv_core, [forked, State, ClonedData], []),
+   {reply, gen_fsm:start(ziryab_core, [forked, State, ClonedData], []),
       State, StateData}.
 
 
@@ -211,7 +211,7 @@ terminate(Reason, _State, _StateData = #state{store = Store}) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 handle_event(_Event, _State, _StateData) ->
-   exit("call to kv_core:handle_event unimplemented.").
+   exit("call to ziryab_core:handle_event unimplemented.").
 
 handle_info(_Info, _Stat, StateData) ->
    {stop, badmsg, StateData}.

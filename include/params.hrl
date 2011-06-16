@@ -1,4 +1,4 @@
--define(TO, 1500).
+-define(TO, 2500).
 -define(GOSSIP_INTERVAL, 1000).
 -define(SYNC_INTERVAL, 1000).
 -define(SYNC_RATE, 100).

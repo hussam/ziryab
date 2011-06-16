@@ -1,3 +1,5 @@
+-include_lib("repobj/include/repobj.hrl").
+
 -define(ELSE, true).
 
 -define(RANGE, 134217728). % 2^27
@@ -6,4 +8,3 @@
    (E < S andalso S =< K andalso K < ?RANGE) orelse
    (E < S andalso 0 =< K andalso K < E))).
 
--record(conf, {id, version = 0, protocol, pids = []}).

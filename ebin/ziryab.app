@@ -3,16 +3,11 @@
       {description, "Scalabe strongly consistent KVS"},
       {vsn, "0.1"},
       {modules, [
-         core,
-         elastic_replica,
-         replica,
-         repobj,
-         utils,
-         kv_core,
-         kvs,
-         kvstracker
+         ziryab,
+         ziryab_core,
+         ziryab_tracker
          ]},
-      {registered, [kvstracker]},
+      {registered, [ziryab_tracker]},
       {applications, [kernel, stdlib]}
    ]
 }.
