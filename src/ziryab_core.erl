@@ -72,6 +72,7 @@ init([new, Range, SyncState]) when is_list(SyncState) ->
    {A,B,C} = now(),
    Fname = "ztable"++integer_to_list(A)++integer_to_list(B)++integer_to_list(C),
    {ok, Store} = dets:open_file(list_to_atom(Fname), [{file, Fname},
+                                                      {type, bag},
                                                       {min_no_slots, 8192},
                                                       {max_no_slots, 16777216}
                                                       ,{ram_file, true}
@@ -92,7 +93,7 @@ init([forked, InitState, StateData = #state{store = StoreName}]) ->
       ?ELSE -> ?SYNC_INTERVAL
    end,
 
-   {ok, Store} = dets:open_file(StoreName, {file, StoreName}),
+   {ok, Store} = dets:open_file(StoreName, [{file, StoreName}, {type, bag}]),
 
    {ok, InitState, StateData#state{store = Store}, TimeToSync}.
 
