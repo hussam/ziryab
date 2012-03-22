@@ -2,7 +2,6 @@
 -export([start/1, addConfs/1, addConfs/2, view/0, view/1]).
 
 -include("ziryab.hrl").
--include("params.hrl").
 
 % starts a tracker on the current node and adds the passed in configurations
 start(Confs) ->
@@ -50,7 +49,7 @@ view(Node) ->
 runTracker() ->
    {A1, A2, A3} = now(),
    random:seed(A1, A2, A3),
-   trackerLoop(ordsets:new(), ctime() + ?GOSSIP_INTERVAL).
+   trackerLoop(ordsets:new(), ctime() + ziryab_config:get(gossip_interval)).
 
 
 % this is used to track the different segments in the kvs.
@@ -63,7 +62,7 @@ trackerLoop(View, TTG) ->
       Delta =< 0 ->     % it's gossip time
          requestLocalConfs(View),
          gossip(View),
-         trackerLoop(View, TTG + ?GOSSIP_INTERVAL);
+         trackerLoop(View, TTG + ziryab_config:get(gossip_interval));
 
       ?ELSE ->          % it's not gossip time yet. Wait, listen, and try again
          receive

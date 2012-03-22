@@ -8,3 +8,14 @@
    (E < S andalso S =< K andalso K < ?RANGE) orelse
    (E < S andalso 0 =< K andalso K < E))).
 
+-record(syncs, {range, cores}).
+
+-record(state, {
+                range,
+                store,
+                succ,
+                sync_state,
+                misc
+             }).
+
+
