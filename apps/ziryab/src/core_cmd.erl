@@ -27,11 +27,7 @@ do({sequencer, Command}, StateData = #state{succ = Succ}) ->
 
 % Handle put/get commands
 do( {Key, Command}, StateData = #state { store = Store, sync_state = SyncState } ) ->
-   fprof:trace(start, "data/my_fprof.trace"),
    {Result, NewSyncState} = doRW( {value, Key}, Command, Store, SyncState ),
-   fprof:trace(stop),
-   fprof:profile(file, "data/my_fprof.trace"),
-   fprof:analyse([{dest, "my_fprof.analysis"}, {cols, 120}]),
    { Result, StateData#state{sync_state = NewSyncState} };
 
 
