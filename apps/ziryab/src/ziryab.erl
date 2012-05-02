@@ -5,10 +5,34 @@
       get/1, get/3,
       ping/1, ping/3,
       split/1,
-      merge/1
+      merge/1,
+
+      start_local/0,
+      put_local/3,
+      get_local/2
    ]).
 
 -include("ziryab.hrl").
+
+%%%%%%%%%%%%%%%%%%%
+% LOCAL KVS       %
+%%%%%%%%%%%%%%%%%%%
+
+start_local() ->
+   ziryab_core:new({0, ?RANGE}, []).
+
+put_local(Pid, Key, Value) ->
+   ziryab_core:do(Pid, {do_command, {Key, {put, Value}}}).
+
+get_local(Pid, Key) ->
+   ziryab_core:do(Pid, {do_command, {Key, get}}).
+
+
+
+%%%%%%%%%%%%%%%%%%%
+% Distributed KVS %
+%%%%%%%%%%%%%%%%%%%
+
 
 % Start a new Key/Value Store
 start(CoreArgs, SegsNodes = [_Nodes | _], RepSettings) when is_list(_Nodes) ->
