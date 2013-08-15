@@ -1,2 +1,0 @@
-#!/bin/bash
-./dev/tools/stop $@ ; ./dev/tools/clean $@ ; ./dev/tools/start $@
